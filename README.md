@@ -4,7 +4,7 @@
 
 Built by Team GENTECH (Presidency University, Bengaluru) for wHACKiest 2026, Mystery Track (UnlockED), Problem 1: Localized Vocational Skill Verification.
 
-> Status: ideation stage. The pitch deck and architecture are done; the demo is being built. This README says what we plan to build, and marks what already works.
+> Status: working demo in mock AI mode. A worker can pick a task, upload a video, get a rubric result and create a passport with a QR code. Real AI scoring, the vouch link and employer search are still being built.
 
 ## The problem
 
