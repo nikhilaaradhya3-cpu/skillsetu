@@ -1,0 +1,14 @@
+{
+  "task_id": "mason_plumb_wall",
+  "trade": "Mason",
+  "title": "Build a straight brick wall section",
+  "instructions": "Show the string line or plumb being set up, lay a short section of brick wall, check it is straight and level, and explain each step out loud.",
+  "criteria": [
+    {"id": "guide_line", "text": "A string line or plumb is set up before laying"},
+    {"id": "mortar", "text": "Mortar is mixed to a workable consistency and spread evenly"},
+    {"id": "joints", "text": "Joints between bricks are even and filled"},
+    {"id": "level_plumb", "text": "The wall is checked for level and plumb"},
+    {"id": "clean_up", "text": "Excess mortar is cleaned off the face"},
+    {"id": "explains_steps", "text": "The worker explains each step in their own words"}
+  ]
+}
