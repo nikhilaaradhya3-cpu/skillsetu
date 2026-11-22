@@ -60,9 +60,9 @@ Voucher web link (OTP)  ->                         ->  AI scoring (Gemini video 
 
 ## What the demo will cover
 
-- [ ] Pick a task card and upload a video
-- [ ] AI scores the video against the rubric and shows the result
-- [ ] Passport page with a QR code
+- [x] Pick a task card and upload a video
+- [x] AI scores the video against the rubric and shows the result "(mock AI)"
+- [x] Passport page with a QR code
 
 Not in the first demo (shown as mockups only): vouch link with OTP, employer search, Kannada voice prompts.
 
