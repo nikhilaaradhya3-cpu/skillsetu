@@ -1,0 +1,14 @@
+{
+  "task_id": "plumber_joint_leak",
+  "trade": "Plumber",
+  "title": "Fix a leaking pipe joint",
+  "instructions": "Show the water being shut off, then fix a leaking pipe joint and explain each step out loud.",
+  "criteria": [
+    {"id": "shutoff", "text": "Water supply is shut off before work starts"},
+    {"id": "clean_joint", "text": "The joint is cleaned and the old sealant is removed"},
+    {"id": "seal", "text": "Thread tape or sealant is applied correctly"},
+    {"id": "tighten", "text": "The joint is tightened firmly without over-tightening"},
+    {"id": "test", "text": "The fix is tested for leaks at the end"},
+    {"id": "explains_steps", "text": "The worker explains each step in their own words"}
+  ]
+}

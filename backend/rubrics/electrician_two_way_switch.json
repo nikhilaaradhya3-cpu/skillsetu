@@ -1,0 +1,13 @@
+{
+  "task_id": "electrician_two_way_switch",
+  "trade": "Electrician",
+  "title": "Wire a two-way switch",
+  "instructions": "Show yourself isolating the power, then wire a two-way switch and explain each step out loud.",
+  "criteria": [
+    {"id": "isolate_power", "text": "Power is isolated before work starts"},
+    {"id": "strip_wires", "text": "Wires are stripped to a suitable length and fully seated in the terminals"},
+    {"id": "correct_terminals", "text": "Live and neutral are connected to the correct terminals"},
+    {"id": "insulation", "text": "Insulation is intact, with no exposed copper outside the terminal"},
+    {"id": "explains_steps", "text": "The worker explains each step in their own words"}
+  ]
+}

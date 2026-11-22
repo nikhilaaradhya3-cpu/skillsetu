@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>SkillSetu</title>
+<style>
+  body { font-family: Arial, sans-serif; max-width: 640px; margin: 24px auto; padding: 0 16px; color: #111; }
+  h1 { color: #1B1F6B; margin-bottom: 4px; }
+  .card { border: 1px solid #ddd; border-radius: 10px; padding: 14px; margin: 14px 0; }
+  .ok { color: #1e7a43; } .bad { color: #b42b2b; }
+  button { background: #1B1F6B; color: #fff; border: 0; border-radius: 8px; padding: 10px 16px; font-size: 15px; cursor: pointer; }
+  button:disabled { opacity: .5; }
+  select, input { padding: 8px; font-size: 15px; width: 100%; box-sizing: border-box; margin: 6px 0; }
+  .code { font-size: 28px; font-weight: bold; letter-spacing: 4px; color: #FD9B36; }
+  .note { color: #666; font-size: 13px; }
+</style>
+</head>
+<body>
+<h1>SkillSetu</h1>
+<p class="note">Demo build. Pick a task, upload a short video, get a rubric pre-score, then create a passport.</p>
+
+<div id="view-passport" class="card" style="display:none"></div>
+
+<div id="view-main">
+  <div class="card">
+    <b>1. Pick a task</b>
+    <select id="task"></select>
+    <p id="instructions" class="note"></p>
+    <p>Read this code out loud in your video: <span class="code" id="code"></span></p>
+  </div>
+  <div class="card">
+    <b>2. Upload your video</b>
+    <input type="file" id="video" accept="video/*">
+    <button id="scoreBtn">Score my video</button>
+    <p id="status" class="note"></p>
+  </div>
+  <div class="card" id="resultCard" style="display:none">
+    <b>3. Result</b>
+    <div id="result"></div>
+    <hr>
+    <input id="name" placeholder="Worker name">
+    <input id="area" placeholder="Area (e.g. Yelahanka, Bengaluru)">
+    <button id="passportBtn">Create passport</button>
+  </div>
+  <div class="card" id="passportCard" style="display:none"></div>
+</div>
+
+<script>
+const API = "http://localhost:8000";
+const $ = id => document.getElementById(id);
+let tasks = [], lastResult = null;
+
+$("code").textContent = String(Math.floor(1000 + Math.random() * 9000));
+
+async function init() {
+  const params = new URLSearchParams(location.search);
+  if (params.get("passport")) return showPassport(params.get("passport"));
+  tasks = await (await fetch(API + "/tasks")).json();
+  $("task").innerHTML = tasks.map(t => `<option value="${t.task_id}">${t.trade}: ${t.title}</option>`).join("");
+  $("task").onchange = showInstructions;
+  showInstructions();
+}
+function showInstructions() {
+  const t = tasks.find(t => t.task_id === $("task").value);
+  $("instructions").textContent = t ? t.instructions : "";
+}
+function renderResult(r) {
+  const rows = r.criteria.map(c =>
+    `<li class="${c.passed ? "ok" : "bad"}">${c.passed ? "✔" : "✘"} ${c.id.replace(/_/g, " ")}: ${c.reason}</li>`).join("");
+  return `<p><b>${r.title}</b>: ${r.passed}/${r.total} passed (${r.score_percent}%)</p>
+    <ul>${rows}</ul><p>${r.summary}</p>
+    <p class="note">${r.mock ? "MOCK RESULT. " : ""}${r.status}</p>`;
+}
+$("scoreBtn").onclick = async () => {
+  const file = $("video").files[0];
+  if (!file) return ($("status").textContent = "Please choose a video first.");
+  $("scoreBtn").disabled = true; $("status").textContent = "Scoring... this can take a minute.";
+  const form = new FormData();
+  form.append("task_id", $("task").value);
+  form.append("liveness_code", $("code").textContent);
+  form.append("video", file);
+  try {
+    const res = await fetch(API + "/score", { method: "POST", body: form });
+    if (!res.ok) throw new Error((await res.json()).detail || res.statusText);
+    lastResult = await res.json();
+    $("result").innerHTML = renderResult(lastResult);
+    $("resultCard").style.display = "block"; $("status").textContent = "";
+  } catch (e) { $("status").textContent = "Error: " + e.message; }
+  $("scoreBtn").disabled = false;
+};
+$("passportBtn").onclick = async () => {
+  const res = await fetch(API + "/passports", {
+    method: "POST", headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ worker_name: $("name").value || "Unnamed", area: $("area").value, result: lastResult })
+  });
+  const p = await res.json();
+  $("passportCard").style.display = "block";
+  $("passportCard").innerHTML = `<b>Passport created</b><p>${p.worker_name}, ${p.area}</p>
+    <img src="${API}/passports/${p.id}/qr" width="180" alt="QR code">
+    <p class="note">Scan to open the passport. Not verified until a human vouches.</p>`;
+};
+async function showPassport(id) {
+  $("view-main").style.display = "none"; $("view-passport").style.display = "block";
+  const res = await fetch(`${API}/passports/${id}`);
+  if (!res.ok) { $("view-passport").textContent = "Passport not found."; return; }
+  const p = await res.json();
+  $("view-passport").innerHTML = `<h2>${p.worker_name}</h2><p>${p.area}</p>${renderResult(p.result)}
+    <p><b>${p.verified ? "Verified" : "Not yet verified (needs a human vouch)"}</b></p>`;
+}
+init();
+</script>
+</body>
+</html>
