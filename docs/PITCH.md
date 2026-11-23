@@ -7,4 +7,4 @@
 5. Architecture: React PWA, FastAPI on AWS, Gemini, ElevenLabs, Supabase and S3
 6. What is new: judge the work, not the classroom; AI plus human, neither alone
 7. Risks: AI misjudges (pre-score only), fake vouches (OTP, rate limits)
-8. Business model: free for workers, paid by the people who hire
+8. Business model: free for workers, paid by the people who hire.
